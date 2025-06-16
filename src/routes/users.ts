@@ -1,13 +1,19 @@
 import express from "express";
-
+import User from "../models/User.js";
+import { authMiddleware, authorizeRoles } from "../middleware/auth.js";
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.status(200).send("users root");
+router.get("/", authMiddleware, authorizeRoles("admin"), async (req, res) => {
+  const result = await User.find();
+  res.status(200).send(result);
 });
 
-router.get("/new", (req, res) => {
-  res.status(200).send("users new");
+router.get("/profile", authMiddleware, (req, res) => {
+  res.json({ message: `Welcome, ${req.user.email}` });
+});
+
+router.get("/admin", authMiddleware, authorizeRoles("admin"), (req, res) => {
+  res.json({ message: "Admin content" });
 });
 
 export const usersRouter = router;
