@@ -9,7 +9,7 @@ services:
       - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: 7ef1594d716da3e0181d57813911fccfa82f5c7ef11a932507
+      MONGO_INITDB_ROOT_PASSWORD: examplepassword
     volumes:
       - mongodb_data:/data/db
 
