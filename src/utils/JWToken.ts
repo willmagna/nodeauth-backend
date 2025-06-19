@@ -1,16 +1,13 @@
 import jwt from "jsonwebtoken";
-
-const JWT_SECRET =
-  process.env.JWT_SECRET ||
-  "fd8b65877836730d63cb764d977e3b8975af1e55a6a8c6341e387f8053e6e11f390389e0c383643bdca1fe996fc637a5724daf890894f88cc48ab9bc";
+import { JWT_SECRET } from "@/config/env.js";
 
 type CreateTokenInput = {
-  obj: Record<string, unknown>;
-  expiresIn: string | number;
+  data: Record<string, unknown>;
+  options?: jwt.SignOptions;
 };
 
-export function createJWToken({ obj, expiresIn }: CreateTokenInput) {
-  return jwt.sign(obj, JWT_SECRET, { expiresIn });
+export function createJWToken({ data, options }: CreateTokenInput): string {
+  return jwt.sign(data, JWT_SECRET, options);
 }
 
 export function parseJWToken(token: string) {

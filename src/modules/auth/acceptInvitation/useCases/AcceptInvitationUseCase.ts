@@ -1,7 +1,7 @@
 import { singleton } from "tsyringe";
 import User from "../../../../models/User.js";
 import { AppError } from "../../../../utils/AppError.js";
-import { parseJWToken } from "../../../../utils/tokenValidation.js";
+import { parseJWToken } from "../../../../utils/JWToken.js";
 import bcrypt from "bcryptjs";
 
 interface AcceptInvitationInput {
@@ -28,6 +28,10 @@ export class AcceptInvitationUseCase {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    if (!hashedPassword) {
+      throw new AppError(500, "Hashed Passowrd before save is null");
+    }
 
     return await User.findOneAndUpdate(
       { verificationToken },

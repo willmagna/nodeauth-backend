@@ -4,29 +4,32 @@ import express from "express";
 import cors from "cors";
 
 import mongoose from "mongoose";
-import { usersRouter } from "./routes/users.js";
 import { globalRateLimiter } from "./middleware/globalRateLimiter.js";
 import { authRouter } from "./modules/auth/routes/index.js";
 import { errorHandler } from "./middleware/errorHandler.js";
-
-const mongoDBURI =
-  process.env.MONGODB_URI ??
-  "mongodb://root:examplepassword@localhost:27017/authDB?authSource=admin";
-
-mongoose
-  .connect(mongoDBURI)
-  .then(() => console.log("MongoDB Database Connected"))
-  .catch((err) => console.error(err));
+import logger from "./lib/logger.js";
+import { BACK_END_BASE_URL, MONGODB_URI, PORT } from "./config/env.js";
 
 const app = express();
+
 app.use(express.json());
 app.use(cors());
 app.use(globalRateLimiter);
 
 app.use("/auth", authRouter);
-app.use("/users", usersRouter);
 
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log("Server running on http://localhost:4000"));
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    logger.info("MongoDB Database Connected");
+    app.listen(PORT, () =>
+      logger.info(`Server running on ${BACK_END_BASE_URL}`)
+    );
+  })
+  .catch((err) => {
+    logger.error(err, "MongoDB Connection Error");
+    logger.error(err, "Server is not running");
+    throw err;
+  });

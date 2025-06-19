@@ -9,6 +9,7 @@ export class LogoutUseCase {
     if (!refreshToken) {
       throw new AppError(401, "Unauthorize");
     }
+
     return await User.updateOne(
       { refreshToken },
       { $unset: { refreshToken: "" } }

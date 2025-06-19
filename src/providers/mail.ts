@@ -1,7 +1,8 @@
+import logger from "../lib/logger.js";
 import nodemailer from "../lib/mailer.js";
 
 export async function sendRecoveryEmail(email: string, code: string) {
-  console.log(`📧 Sending recovery code ${code} to ${email}`);
+  logger.info(`📧 Sending recovery code ${code} to ${email}`);
 
   const result = await nodemailer.sendMail({
     from: '"Maddison Foo Koch" <from@example.com >',
@@ -11,14 +12,14 @@ export async function sendRecoveryEmail(email: string, code: string) {
     html: `<p>Recovey code: ${code}</p>`, // HTML body
   });
 
-  console.log(result);
+  logger.info(result);
 }
 
 export async function sendInvitationEmail(
   email: string,
   invitationLink: string
 ) {
-  console.log(`Sending invitation link to ${email}`);
+  logger.info(`Sending invitation link to ${email}`);
 
   const result = await nodemailer.sendMail({
     from: '"Maddison Foo Koch" <from@example.com >',
@@ -28,5 +29,5 @@ export async function sendInvitationEmail(
     html: `<p>Invitation link to signup into ScaleHub: ${invitationLink}</p>`, // HTML body
   });
 
-  console.log(result);
+  logger.info(result);
 }

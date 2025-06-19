@@ -8,7 +8,8 @@ import {
   ACCESS_SECRET,
   REFRESH_EXPIRES_IN,
   REFRESH_SECRET,
-} from "../../shared/constants.js";
+} from "../../../../config/env.js";
+import logger from "../../../../lib/logger.js";
 
 interface LoginRequest {
   email: string;
@@ -47,7 +48,10 @@ export class LoginUseCase {
     });
 
     user.refreshToken = refreshToken;
+
     await user.save();
+
+    logger.info(`User ${user._id} has loggedin`);
 
     return {
       id: user._id,

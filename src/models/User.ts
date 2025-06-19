@@ -12,7 +12,6 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      // require: [true, "Password must be provided!"],
       trim: true,
       select: false,
     },

@@ -1,7 +1,7 @@
+import { API_KEY } from "@/config/env.js";
+import logger from "@/lib/logger.js";
+import { AppError } from "@/utils/AppError.js";
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-
-const ACCESS_SECRET = process.env.ACCESS_SECRET;
 
 export function authMiddleware(
   req: Request,
@@ -9,29 +9,21 @@ export function authMiddleware(
   next: NextFunction
 ) {
   const authHeader = req.headers.authorization;
-  if (!authHeader?.startsWith("Bearer ")) {
-    res.sendStatus(401);
-    return;
-  }
 
-  if (!ACCESS_SECRET) {
-    res.status(500).json({ message: "Secrets environment not found" });
-    return;
+  const ip =
+    req.ip || req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+
+  if (!authHeader?.startsWith("Bearer ")) {
+    logger.warn(`authMiddleware - ${ip} - Unauthorized`);
+    throw new AppError(401, "Unauthorized");
   }
 
   const token = authHeader.split(" ")[1];
 
-  jwt.verify(token, ACCESS_SECRET, (err, decoded) => {
-    if (err) return res.sendStatus(403);
-    req.user = decoded;
-    next();
-  });
-}
+  if (API_KEY != token) {
+    logger.warn(`authMiddleware - ${ip} - Unauthorized`);
+    throw new AppError(401, "Unauthorized");
+  }
 
-export function authorizeRoles(...rolesAllowed: string[]) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const userRole = req.user?.role;
-    if (!rolesAllowed.includes(userRole)) return res.sendStatus(403);
-    next();
-  };
+  next();
 }

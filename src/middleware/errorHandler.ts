@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import logger from "@/lib/logger.js";
 
 export function errorHandler(
   err: any,
@@ -6,7 +7,7 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ) {
-  console.error("🔥 Global Error Handler:", err);
+  logger.error(err, "Global Error Handler");
 
   const statusCode = err.status || err.statusCode || 500;
 

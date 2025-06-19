@@ -1,13 +1,13 @@
 import { singleton } from "tsyringe";
-import User from "../../../../models/User.js";
-import { AppError } from "../../../../utils/AppError.js";
+import User from "@/models/User.js";
+import { AppError } from "@/utils/AppError.js";
 import jwt from "jsonwebtoken";
 import { RefreshTokenInput } from "../../shared/types.js";
 import {
   ACCESS_EXPIRES_IN,
   ACCESS_SECRET,
   REFRESH_SECRET,
-} from "../../shared/constants.js";
+} from "@/config/env.js";
 
 @singleton()
 export class RefreshTokenUseCase {
@@ -30,7 +30,8 @@ export class RefreshTokenUseCase {
           id: user._id,
           email: user.email,
           isSuperAdmin: user.isSuperAdmin,
-          role: user.role,
+          authorizations: user.authorizations,
+          isVerified: user.isVerified,
         },
         ACCESS_SECRET,
         { expiresIn: ACCESS_EXPIRES_IN }

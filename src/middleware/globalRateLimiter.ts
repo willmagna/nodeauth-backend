@@ -1,12 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import redisClient from "../lib/redisClient.js";
-
-const WINDOW_IN_SECONDS = process.env.GLOBAL_RATE_LIMITER_WINDOW_IN_SECONDS
-  ? Number(process.env.GLOBAL_RATE_LIMITER_WINDOW_IN_SECONDS)
-  : 5 * 60;
-const MAX_REQUESTS = process.env.GLOBAL_RATE_LIMITER_MAX_REQUESTS
-  ? Number(process.env.GLOBAL_RATE_LIMITER_MAX_REQUESTS)
-  : 100;
+import { MAX_REQUESTS, WINDOW_IN_SECONDS } from "../config/env.js";
 
 export async function globalRateLimiter(
   req: Request,
