@@ -28,8 +28,8 @@ Authentication feature pre-built in
 1. Clone the project:
 
 ```bash
-git clone
-cd node-auth-template
+git clone git@github.com:willmagna/nodeauth-backend.git
+cd nodeauth-backend
 
 ```
 
