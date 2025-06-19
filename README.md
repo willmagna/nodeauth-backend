@@ -1,29 +1,32 @@
-# BACKEND AUTHENTICATION SERVER
+# Backend Authentication Server
 
-This backend template can be use as a stand authentication server or it can be used as a template for a full backend server.
+This backend template can be used as a **standalone authentication server** or as a **starting point for a full backend server**.
 
-Authentication feature pre-built in
+### 🔐 Authentication features included:
 
-- JWT authentication based
+- JWT-based authentication
 - Direct user registration
-- User registration by invitation email signup
+- User registration via invitation (email signup)
 - Refresh tokens
-- 2FA Password recovery flow
-- Error handling & validation
-- Pino logger
-- Rate limiter
-- Global rate limiter
-- Authentication middleware by static API Token (applied when standalone auth server)
+- Password recovery with 2FA (optional)
+- Global and per-user rate limiting (Redis-based)
+- Authentication middleware via static API Token (useful when running as a standalone auth server)
+- Error handling and validation
+- Pino logger (high-performance logging)
 
-## Technologies
+---
 
-- NodeJS
-- Typescript
+## 🏗️ Technologies
+
+- Node.js
+- TypeScript
 - MongoDB
 - Redis
-- Docker compose
+- Docker Compose
 
-## Local Deploy
+---
+
+## 🚀 Local Development
 
 1. Clone the project:
 
