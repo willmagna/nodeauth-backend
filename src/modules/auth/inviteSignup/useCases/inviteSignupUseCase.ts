@@ -19,14 +19,18 @@ export class InviteSignupUseCase {
 
     const invitationLink = `${process.env.FRONT_END_BASE_URL}/?token=${verificationToken}`;
 
-    await sendInvitationEmail(email, invitationLink);
-
     const user = new User({
       email,
       authorizations,
       verificationToken,
     });
 
-    return await user.save();
+    try {
+      const result = await user.save();
+      await sendInvitationEmail(email, invitationLink);
+      return result;
+    } catch (err) {
+      throw err;
+    }
   }
 }
