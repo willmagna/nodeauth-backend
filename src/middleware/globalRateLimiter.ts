@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import redisClient from "../services/redisClient.js";
+import redisClient from "../lib/redisClient.js";
 
 const WINDOW_IN_SECONDS = process.env.GLOBAL_RATE_LIMITER_WINDOW_IN_SECONDS
   ? Number(process.env.GLOBAL_RATE_LIMITER_WINDOW_IN_SECONDS)

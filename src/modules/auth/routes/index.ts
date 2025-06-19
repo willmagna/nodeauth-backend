@@ -4,21 +4,23 @@ import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { LoginController } from "../login/controllers/LoginController.js";
 import { LogoutControler } from "../logout/controllers/LogoutController.js";
 import { RefreshTokenController } from "../refreshToken/controllers/RefreshTokenController.js";
-import { RegisterController } from "../register/controllers/RegisterController.js";
+import { SignupController } from "../signup/controllers/SignupController.js";
 import { ForgotPasswordController } from "../forgotPassword/controllers/ForgotPasswordController.js";
 import { ResetPasswordController } from "../resetPassword/controllers/ResetPasswordController.js";
-import { RegisterInvitationController } from "../registerInvitation/controllers/RegisterInvitationController.js";
+import { InviteSignupController } from "../inviteSignup/controllers/inviteSignupController.js";
+import { AcceptInvitationController } from "../acceptInvitation/controllers/AcceptInvitationController.js";
 
 export const authRouter = express.Router();
 
 const loginController = container.resolve(LoginController);
 const logoutController = container.resolve(LogoutControler);
 const refreshTokenController = container.resolve(RefreshTokenController);
-const registerController = container.resolve(RegisterController);
+const signUpController = container.resolve(SignupController);
 const forgotPasswordController = container.resolve(ForgotPasswordController);
 const resetPasswordController = container.resolve(ResetPasswordController);
-const registerInvitationController = container.resolve(
-  RegisterInvitationController
+const inviteSignupController = container.resolve(InviteSignupController);
+const acceptInvitationController = container.resolve(
+  AcceptInvitationController
 );
 
 authRouter.post(
@@ -37,8 +39,8 @@ authRouter.post(
 );
 
 authRouter.post(
-  "/register",
-  asyncHandler((req, res) => registerController.execute(req, res))
+  "/signup",
+  asyncHandler((req, res) => signUpController.execute(req, res))
 );
 
 authRouter.post(
@@ -52,6 +54,11 @@ authRouter.post(
 );
 
 authRouter.post(
-  "/register-invitation",
-  asyncHandler((req, res) => registerInvitationController.execute(req, res))
+  "/invite-signup",
+  asyncHandler((req, res) => inviteSignupController.execute(req, res))
+);
+
+authRouter.post(
+  "/accept-invitation",
+  asyncHandler((req, res) => acceptInvitationController.execute(req, res))
 );

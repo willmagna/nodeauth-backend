@@ -1,23 +1,28 @@
-import { injectable, singleton } from "tsyringe";
-import { AppError } from "../../../../utils/AppError.js";
+import { singleton } from "tsyringe";
 import bcrypt from "bcryptjs";
 import User from "../../../../models/User.js";
+import { Role } from "../../shared/types.js";
 
-interface RegisterInput {
+interface SignupInput {
   email: string;
   password: string;
-  role?: object;
+  authorizations?: Role[];
   isVerified?: boolean;
 }
 
 @singleton()
-export class RegisterUseCase {
-  public async execute({ email, password, role, isVerified }: RegisterInput) {
+export class SignupUseCase {
+  public async execute({
+    email,
+    password,
+    authorizations,
+    isVerified,
+  }: SignupInput) {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
       email,
       password: hashedPassword,
-      role,
+      authorizations,
       isVerified,
     });
     return await user.save();

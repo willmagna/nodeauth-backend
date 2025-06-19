@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    role: {
+    authorizations: {
       type: Object,
     },
     isVerified: {
@@ -33,6 +33,9 @@ const userSchema = new mongoose.Schema(
     },
     refreshToken: {
       type: String,
+    },
+    metadata: {
+      type: Object,
     },
   },
   {

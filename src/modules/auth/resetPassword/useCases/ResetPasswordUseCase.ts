@@ -1,8 +1,7 @@
 import { singleton } from "tsyringe";
 import User from "../../../../models/User.js";
 import { AppError } from "../../../../utils/AppError.js";
-import redisClient from "../../../../services/redisClient.js";
-import { sendRecoveryEmail } from "../../../../services/mail.js";
+import redisClient from "../../../../lib/redisClient.js";
 import bcrypt from "bcryptjs";
 
 interface ResetPasswordInput {

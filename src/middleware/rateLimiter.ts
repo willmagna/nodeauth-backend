@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import redisClient from "../services/redisClient.js";
+import redisClient from "../lib/redisClient.js";
 
 export function rateLimiter(
   prefix: string,

@@ -1,8 +1,8 @@
 import { singleton } from "tsyringe";
 import User from "../../../../models/User.js";
 import { AppError } from "../../../../utils/AppError.js";
-import redisClient from "../../../../services/redisClient.js";
-import { sendRecoveryEmail } from "../../../../services/mail.js";
+import redisClient from "../../../../lib/redisClient.js";
+import { sendRecoveryEmail } from "../../../../providers/mail.js";
 
 interface ForgotPasswordInput {
   email: string;
@@ -23,7 +23,7 @@ export class ForgotPasswordUseCase {
 
     await redisClient.set(key, code, { EX: 900 }); // 15 minutes expiration
 
-    sendRecoveryEmail(email, code);
+    await sendRecoveryEmail(email, code);
 
     return "Recovery code sent to your email";
   }
