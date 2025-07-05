@@ -1,15 +1,15 @@
 import { injectable, singleton } from "tsyringe";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../../../../models/User.js";
-import { AppError } from "../../../../utils/AppError.js";
+import User from "@/models/User.js";
+import { AppError } from "@/utils/AppError.js";
 import {
   ACCESS_EXPIRES_IN,
   ACCESS_SECRET,
   REFRESH_EXPIRES_IN,
   REFRESH_SECRET,
-} from "../../../../config/env.js";
-import logger from "../../../../lib/logger.js";
+} from "@/config/env.js";
+import logger from "@/lib/logger.js";
 
 interface LoginRequest {
   email: string;
