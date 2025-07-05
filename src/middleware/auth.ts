@@ -9,6 +9,14 @@ export function authMiddleware(
   next: NextFunction
 ) {
   const authHeader = req.headers.authorization;
+
+  const { refreshToken } = req.cookies;
+
+  if (!refreshToken) {
+    res.status(401).json({ message: "You are not logged in" });
+    return;
+  }
+
   if (!authHeader?.startsWith("Bearer ")) {
     res.sendStatus(401);
     return;
@@ -22,7 +30,7 @@ export function authMiddleware(
   const token = authHeader.split(" ")[1];
 
   jwt.verify(token, ACCESS_SECRET, (err, decoded) => {
-    if (err) return res.sendStatus(403);
+    if (err) return res.sendStatus(401);
     req.user = decoded;
     next();
   });

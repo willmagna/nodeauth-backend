@@ -12,24 +12,31 @@ const router = express.Router();
 
 const ACCESS_SECRET = process.env.ACCESS_SECRET;
 const REFRESH_SECRET = process.env.REFRESH_SECRET;
-const ACCESS_EXPIRES_IN = "10m"; // short for testing
-const REFRESH_EXPIRES_IN = "1h";
+const ACCESS_EXPIRES_IN = "1m"; // short for testing
+const REFRESH_EXPIRES_IN = "3m";
 
 // # REGISTER
 router.post("/register", async (req: Request, res: Response): Promise<void> => {
   const { email, password, role } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = new User({ email, password: hashedPassword, role });
-  const result = await user.save();
-  console.log(result);
-  res.json({ message: "User registered successfully" });
+
+  try {
+    const result = await user.save();
+    res.json({ message: "User registered successfully" });
+  } catch (error) {
+    res.status(400).json(error);
+    console.error(error);
+    return;
+  }
 });
 
 // # LOGIN
 router.post(
   "/login",
-  rateLimiter("login", 10, 60),
+  // rateLimiter("login", 10, 60),
   async (req: Request, res: Response): Promise<void> => {
+    console.log("/auth/login");
     if (!ACCESS_SECRET || !REFRESH_SECRET) {
       res.status(500).json({ message: "Secrets environment not found" });
       return;
@@ -64,62 +71,94 @@ router.post(
     user.refreshToken = refreshToken;
     await user.save();
 
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false, // Set to true in production with HTTPS - Activates SSL
+      sameSite: "strict",
+      maxAge: 1 * 24 * 60 * 60 * 1000,
+    });
+
     res.json({
       id: user._id,
       email: user.email,
       role: user.role,
       accessToken,
-      refreshToken,
     });
   }
 );
 
 // # REFRESH
-router.post("/refresh", async (req: Request, res: Response): Promise<void> => {
-  if (!ACCESS_SECRET || !REFRESH_SECRET) {
-    res.status(500).json({ message: "Secrets environment not found" });
-    return;
-  }
+router.post(
+  "/refresh-token",
+  async (req: Request, res: Response): Promise<void> => {
+    console.log("/auth/refresh-token");
 
-  const { refreshToken } = req.body;
+    if (!ACCESS_SECRET || !REFRESH_SECRET) {
+      res.status(500).json({ message: "Secrets environment not found" });
+      return;
+    }
 
-  if (!refreshToken) {
-    res.sendStatus(401); // Unauthorize
-    return;
-  }
+    const { refreshToken } = req.cookies;
 
-  const user = await User.findOne({ refreshToken });
-  if (!user) {
-    res.sendStatus(403); // Forbidden
-    return;
-  }
+    // console.log(refreshToken);
 
-  jwt.verify(refreshToken, REFRESH_SECRET, (err: any, decoded: any) => {
-    if (err) return res.sendStatus(403); // Forbidden
+    if (!refreshToken) {
+      res.sendStatus(401); // Unauthorize
+      return;
+    }
 
-    const newAccessToken = jwt.sign(
-      {
-        id: user.id,
+    const user = await User.findOne({ refreshToken });
+    if (!user) {
+      res.sendStatus(401); // Unauthorized
+      return;
+    }
+
+    jwt.verify(refreshToken, REFRESH_SECRET, (err: any, decoded: any) => {
+      if (err) return res.sendStatus(401); // Unauthorized
+
+      const newAccessToken = jwt.sign(
+        {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+        },
+        ACCESS_SECRET,
+        { expiresIn: ACCESS_EXPIRES_IN }
+      );
+
+      res.json({
+        id: user._id,
         email: user.email,
         role: user.role,
-      },
-      ACCESS_SECRET,
-      { expiresIn: ACCESS_EXPIRES_IN }
-    );
-
-    res.json({ accessToken: newAccessToken });
-  });
-});
+        accessToken: newAccessToken,
+      });
+    });
+  }
+);
 
 // # LOGOUT
 
 router.post("/logout", async (req: Request, res: Response): Promise<void> => {
-  const { refreshToken } = req.body;
+  console.log("/auth/logout");
+  const { refreshToken } = req.cookies;
+
   if (!refreshToken) {
     res.sendStatus(404);
     return;
   }
-  await User.updateOne({ refreshToken }, { $unset: { refreshToken: "" } });
+
+  try {
+    await User.updateOne({ refreshToken }, { $unset: { refreshToken: "" } });
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: false,
+    sameSite: "strict",
+  });
   res.json({ messge: "Logged out" });
 });
 

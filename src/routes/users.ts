@@ -9,6 +9,8 @@ router.get("/", authMiddleware, authorizeRoles("admin"), async (req, res) => {
 });
 
 router.get("/profile", authMiddleware, (req, res) => {
+  console.log("/user/profile");
+  // console.log(req.cookies.refreshToken);
   res.json({ message: `Welcome, ${req.user.email}` });
 });
 

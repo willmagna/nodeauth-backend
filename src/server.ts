@@ -3,16 +3,28 @@ import express from "express";
 import cors from "cors";
 import { authRouter } from "./routes/auth.js";
 import mongoose from "mongoose";
-import { authMiddleware, authorizeRoles } from "./middleware/auth.js";
 import { usersRouter } from "./routes/users.js";
 import { globalRateLimiter } from "./middleware/globalRateLimiter.js";
+import cookieParser from "cookie-parser";
 
-mongoose.connect("mongodb://root:examplepassword@localhost:27017");
+mongoose.connect(
+  "mongodb://root:examplepassword@localhost:27017/authDB?authSource=admin"
+);
 
 const app = express();
+
 app.use(express.json());
-app.use(cors());
-app.use(globalRateLimiter);
+app.use(cookieParser());
+
+// Allow frontend on port 3000
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
+
+// app.use(globalRateLimiter);
 
 app.use("/auth", authRouter);
 app.use("/users", usersRouter);
