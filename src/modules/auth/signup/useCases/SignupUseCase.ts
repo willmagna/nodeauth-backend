@@ -1,28 +1,30 @@
 import { singleton } from "tsyringe";
 import bcrypt from "bcryptjs";
 import User from "../../../../models/User.js";
-import { Role } from "../../shared/types.js";
 
 interface SignupInput {
+  name: string;
   email: string;
   password: string;
-  authorizations?: Role[];
+  role: string;
   isVerified?: boolean;
 }
 
 @singleton()
 export class SignupUseCase {
   public async execute({
+    name,
     email,
     password,
-    authorizations,
+    role,
     isVerified,
   }: SignupInput) {
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({
+      name,
       email,
       password: hashedPassword,
-      authorizations,
+      role,
       isVerified,
     });
     return await user.save();

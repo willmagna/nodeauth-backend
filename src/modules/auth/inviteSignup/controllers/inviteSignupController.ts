@@ -13,11 +13,12 @@ export class InviteSignupController extends BaseController {
   }
 
   public async execute(req: Request, res: Response): Promise<void> {
-    const { email, authorizations } = req.body;
+    const { name, email, role } = req.body;
 
     const result = await this.inviteSignupUseCase.execute({
+      name,
       email,
-      authorizations,
+      role,
     });
 
     this.ok(res, result);

@@ -7,7 +7,7 @@ import { RefreshTokenInput } from "../../shared/types.js";
 export class LogoutUseCase {
   public async execute({ refreshToken }: RefreshTokenInput) {
     if (!refreshToken) {
-      throw new AppError(401, "Unauthorize");
+      throw new AppError(401, "Unauthorized");
     }
 
     return await User.updateOne(

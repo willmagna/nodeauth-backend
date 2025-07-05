@@ -13,7 +13,7 @@ export class RefreshTokenController extends BaseController {
   }
 
   public async execute(req: Request, res: Response): Promise<void> {
-    const { refreshToken } = req.body;
+    const { refreshToken } = req.cookies;
     const result = await this.refreshTokenUseCase.execute({ refreshToken });
     this.ok(res, result);
   }

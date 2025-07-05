@@ -1,38 +1,41 @@
 import { singleton } from "tsyringe";
 import User from "@/models/User.js";
 import { createJWToken } from "@/utils/JWToken.js";
-import { Role } from "../../shared/types.js";
 import { sendInvitationEmail } from "@/providers/mail.js";
 import logger from "@/lib/logger.js";
 
 interface InviteSignupInput {
+  name: string;
   email: string;
-  authorizations: Role[];
+  role: string;
 }
 
 @singleton()
 export class InviteSignupUseCase {
-  public async execute({ email, authorizations }: InviteSignupInput) {
+  public async execute({ name, email, role }: InviteSignupInput) {
     const verificationToken = createJWToken({
-      data: { email, authorizations },
+      data: { name, email, role },
       options: { expiresIn: 2592000 }, //30 days in seconds
     });
 
     const invitationLink = `${process.env.FRONT_END_BASE_URL}/?token=${verificationToken}`;
 
     const user = new User({
+      name,
       email,
-      authorizations,
+      role,
       verificationToken,
     });
 
     const userSaveResult = await user.save();
 
-    await sendInvitationEmail(email, invitationLink).catch(async (err) => {
+    try {
+      await sendInvitationEmail(email, invitationLink);
+    } catch (error) {
       await User.deleteOne({ email });
-      logger.error(err, "Error on InviteSignupUseCase - sendInvitationEmail");
-      throw err;
-    });
+      logger.error(error, "Error on InviteSignupUseCase - sendInvitationEmail");
+      throw error;
+    }
 
     return userSaveResult;
   }

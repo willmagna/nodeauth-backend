@@ -27,16 +27,13 @@ export class LoginUseCase {
     if (!(user.password && (await bcrypt.compare(password, user.password)))) {
       throw new AppError(401, "Invalid credentials");
     }
-    if (!user.isSuperAdmin && !user.isVerified) {
-      throw new AppError(401, "User not verified");
-    }
 
     const accessToken = jwt.sign(
       {
         id: user._id,
+        name: user.name,
         email: user.email,
-        isSuperAdmin: user.isSuperAdmin,
-        authorizations: user.authorizations,
+        role: user.role,
         isVerified: user.isVerified,
       },
       ACCESS_SECRET,
@@ -55,10 +52,9 @@ export class LoginUseCase {
 
     return {
       id: user._id,
+      name: user.name,
       email: user.email,
-      isSuperAdmin: user.isSuperAdmin,
-      authorizations: user.authorizations,
-      isVerified: user.isVerified,
+      role: user.role,
       accessToken,
       refreshToken,
     };

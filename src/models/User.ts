@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+      require: [true, "User name is required"],
+      trim: true,
+    },
     email: {
       type: String,
       required: [true, "Emails is required"],
@@ -15,12 +20,9 @@ const userSchema = new mongoose.Schema(
       trim: true,
       select: false,
     },
-    isSuperAdmin: {
-      type: Boolean,
-      default: false,
-    },
-    authorizations: {
-      type: Object,
+    role: {
+      type: String,
+      default: "user",
     },
     isVerified: {
       type: Boolean,
@@ -32,9 +34,6 @@ const userSchema = new mongoose.Schema(
     },
     refreshToken: {
       type: String,
-    },
-    metadata: {
-      type: Object,
     },
   },
   {

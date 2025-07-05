@@ -2,6 +2,7 @@ import { autoInjectable, inject } from "tsyringe";
 import { LogoutUseCase } from "../useCases/LogoutUseCase.js";
 import { Request, Response } from "express";
 import { BaseController } from "../../../../core/BaseController.js";
+import logger from "@/lib/logger.js";
 
 @autoInjectable()
 export class LogoutControler extends BaseController {
@@ -13,8 +14,18 @@ export class LogoutControler extends BaseController {
   }
 
   public async execute(req: Request, res: Response): Promise<void> {
-    const { refreshToken } = req.body;
+    const { refreshToken } = req.cookies;
+
     const result = await this.logoutUseCase.execute({ refreshToken });
-    this.ok(res, result);
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "strict",
+    });
+
+    logger.info(`User Logged Out`);
+
+    this.ok(res, { message: "Logged Out" });
   }
 }

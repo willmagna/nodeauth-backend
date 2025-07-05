@@ -13,12 +13,13 @@ export class SignupController extends BaseController {
   }
 
   public async execute(req: Request, res: Response): Promise<void> {
-    const { email, password, authorizations, isVerified } = req.body;
+    const { name, email, password, role, isVerified } = req.body;
 
     const result = await this.signupUseCase.execute({
+      name,
       email,
       password,
-      authorizations,
+      role,
       isVerified,
     });
 

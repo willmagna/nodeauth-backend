@@ -13,31 +13,37 @@ import {
 export class RefreshTokenUseCase {
   public async execute({ refreshToken }: RefreshTokenInput) {
     if (!refreshToken) {
-      throw new AppError(401, "Unauthorize");
+      throw new AppError(401, "Unauthorized");
     }
 
     const user = await User.findOne({ refreshToken });
 
     if (!user) {
-      throw new AppError(403, "Forbidden");
+      throw new AppError(401, "Unauthorized");
     }
 
     return jwt.verify(refreshToken, REFRESH_SECRET, (err: any) => {
-      if (err) throw new AppError(403, "Forbidden");
+      if (err) throw new AppError(401, "Unauthorized");
 
       const newAccessToken = jwt.sign(
         {
           id: user._id,
+          name: user.name,
           email: user.email,
-          isSuperAdmin: user.isSuperAdmin,
-          authorizations: user.authorizations,
+          role: user.role,
           isVerified: user.isVerified,
         },
         ACCESS_SECRET,
         { expiresIn: ACCESS_EXPIRES_IN }
       );
 
-      return { accessToken: newAccessToken };
+      return {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        accessToken: newAccessToken,
+      };
     });
   }
 }

@@ -7,7 +7,9 @@ export const MONGODB_URI = process.env.MONGODB_URI ?? "";
 
 export const ACCESS_EXPIRES_IN = process.env.ACCESS_EXPIRES_IN ?? "";
 export const REFRESH_EXPIRES_IN = process.env.REFRESH_EXPIRES_IN ?? "";
-export const ACCESS_SECRET = process.env.ACCESS_SECRET ?? "";
+export const REFRESH_TOKEN_COOKIE_MAX_AGE =
+  Number(process.env.REFRESH_TOKEN_COOKIE_MAX_AGE) ?? 30;
+export const ACCESS_SECRET = process.env.ACCESS_SECRET ?? ("" as string);
 export const REFRESH_SECRET = process.env.REFRESH_SECRET ?? "";
 
 export const JWT_SECRET = process.env.JWT_SECRET ?? "";
