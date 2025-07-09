@@ -34,7 +34,7 @@ export class RefreshTokenUseCase {
           isVerified: user.isVerified,
         },
         ACCESS_SECRET,
-        { expiresIn: ACCESS_EXPIRES_IN }
+        { expiresIn: ACCESS_EXPIRES_IN } as jwt.SignOptions
       );
 
       return {

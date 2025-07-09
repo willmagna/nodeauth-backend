@@ -37,12 +37,12 @@ export class LoginUseCase {
         isVerified: user.isVerified,
       },
       ACCESS_SECRET,
-      { expiresIn: ACCESS_EXPIRES_IN }
+      { expiresIn: ACCESS_EXPIRES_IN } as jwt.SignOptions
     );
 
     const refreshToken = jwt.sign({ id: user._id }, REFRESH_SECRET, {
       expiresIn: REFRESH_EXPIRES_IN,
-    });
+    } as jwt.SignOptions);
 
     user.refreshToken = refreshToken;
 
