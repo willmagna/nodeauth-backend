@@ -3,6 +3,7 @@ import { autoInjectable, inject, injectable } from "tsyringe";
 
 import { BaseController } from "../../../../core/BaseController.js";
 import { ResetPasswordUseCase } from "../useCases/ResetPasswordUseCase.js";
+import logger from "@/lib/logger.js";
 
 @autoInjectable()
 export class ResetPasswordController extends BaseController {
@@ -15,6 +16,8 @@ export class ResetPasswordController extends BaseController {
 
   public async execute(req: Request, res: Response): Promise<void> {
     const { email, code, newPassword } = req.body;
+
+    logger.info("/auth/reset-password");
 
     const result = await this.resetPasswordUseCase.execute({
       email,

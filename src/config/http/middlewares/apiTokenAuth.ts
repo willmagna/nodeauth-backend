@@ -1,13 +1,9 @@
-import { API_KEY } from "@/config/env.js";
+import { API_KEY } from "@/config/env/env.js";
 import logger from "@/lib/logger.js";
 import { AppError } from "@/utils/AppError.js";
 import { Request, Response, NextFunction } from "express";
 
-export function authMiddleware(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export function apiTokenAuth(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
 
   const ip =

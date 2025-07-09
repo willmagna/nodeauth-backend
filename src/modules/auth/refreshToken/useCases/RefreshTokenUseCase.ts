@@ -7,7 +7,7 @@ import {
   ACCESS_EXPIRES_IN,
   ACCESS_SECRET,
   REFRESH_SECRET,
-} from "@/config/env.js";
+} from "@/config/env/env.js";
 
 @singleton()
 export class RefreshTokenUseCase {

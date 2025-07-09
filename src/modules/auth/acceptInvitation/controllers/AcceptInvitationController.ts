@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { autoInjectable, inject, injectable } from "tsyringe";
 import { BaseController } from "../../../../core/BaseController.js";
 import { AcceptInvitationUseCase } from "../useCases/AcceptInvitationUseCase.js";
+import logger from "@/lib/logger.js";
 
 @autoInjectable()
 export class AcceptInvitationController extends BaseController {
@@ -14,6 +15,8 @@ export class AcceptInvitationController extends BaseController {
 
   public async execute(req: Request, res: Response): Promise<void> {
     const { verificationToken, password } = req.body;
+
+    logger.info("/auth/accept-invitation");
 
     const result = await this.acceptInvitationUseCase.execute({
       verificationToken,

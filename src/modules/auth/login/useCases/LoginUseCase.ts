@@ -8,7 +8,7 @@ import {
   ACCESS_SECRET,
   REFRESH_EXPIRES_IN,
   REFRESH_SECRET,
-} from "@/config/env.js";
+} from "@/config/env/env.js";
 import logger from "@/lib/logger.js";
 
 interface LoginRequest {

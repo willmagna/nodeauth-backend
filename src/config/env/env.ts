@@ -1,3 +1,4 @@
+export const NODE_ENV = process.env.NODE_ENV ?? "";
 export const PORT = process.env.PORT ?? "";
 export const API_KEY = process.env.API_KEY ?? "";
 export const BACK_END_BASE_URL = process.env.BACK_END_BASE_URL ?? "";

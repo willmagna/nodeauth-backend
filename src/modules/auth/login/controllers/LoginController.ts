@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 import { autoInjectable, inject, injectable } from "tsyringe";
 import { LoginUseCase } from "../useCases/LoginUseCase.js";
 import { BaseController } from "@/core/BaseController.js";
-import { REFRESH_TOKEN_COOKIE_MAX_AGE } from "@/config/env.js";
+import { REFRESH_TOKEN_COOKIE_MAX_AGE } from "@/config/env/env.js";
+import logger from "@/lib/logger.js";
 
 @autoInjectable()
 export class LoginController extends BaseController {
@@ -15,6 +16,8 @@ export class LoginController extends BaseController {
 
   public async execute(req: Request, res: Response): Promise<void> {
     const { email, password } = req.body;
+
+    logger.info("/auth/login");
 
     const result = await this.loginUseCase.execute({ email, password });
 

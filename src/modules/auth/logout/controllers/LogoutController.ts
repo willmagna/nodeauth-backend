@@ -16,6 +16,8 @@ export class LogoutControler extends BaseController {
   public async execute(req: Request, res: Response): Promise<void> {
     const { refreshToken } = req.cookies;
 
+    logger.info("/auth/logout");
+
     const result = await this.logoutUseCase.execute({ refreshToken });
 
     res.clearCookie("refreshToken", {

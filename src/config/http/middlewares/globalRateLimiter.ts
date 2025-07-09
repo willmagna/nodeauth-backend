@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import redisClient from "../lib/redisClient.js";
-import { MAX_REQUESTS, WINDOW_IN_SECONDS } from "../config/env.js";
+import redisClient from "../../../lib/redisClient.js";
+import { MAX_REQUESTS, WINDOW_IN_SECONDS } from "../../env/env.js";
 
 export async function globalRateLimiter(
   req: Request,

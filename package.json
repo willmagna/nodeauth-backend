@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsx watch src/server.ts"
+    "dev": "tsx watch src/config/http/server.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
